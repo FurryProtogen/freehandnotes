@@ -42,7 +42,10 @@ class _FreehandNotesOptionsFABState extends State<FreehandNotesOptionsFAB> {
           isScrollControlled: true,
           isDismissible: true,
           enableDrag: true,
-
+          constraints: const BoxConstraints(
+            maxWidth: 500,
+            minHeight: 300,
+          ),
           builder: (context) {
             return _BottomSheet(
               strokeOptionsSliders: StrokeOptionsSliders(
@@ -56,10 +59,6 @@ class _FreehandNotesOptionsFABState extends State<FreehandNotesOptionsFAB> {
               stringSettings: widget.stringSettings,
             );
           },
-          constraints: const BoxConstraints(
-            maxWidth: 500,
-            minHeight: 300,
-          ),
         );
       },
       child: Icon(Icons.edit, color: widget.iconColor,),

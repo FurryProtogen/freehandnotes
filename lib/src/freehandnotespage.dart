@@ -9,6 +9,7 @@ class FreehandNotesPage extends StatelessWidget {
     return const Scaffold(
       body: FreehandNotes(),
       floatingActionButton: FreehandNotesOptionsFAB(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

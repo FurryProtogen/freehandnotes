@@ -28,36 +28,34 @@ class _DrawingPageState extends State<DrawingPage> {
     });
   }*/
 
-  void onPanStart(DragStartDetails details) {
+  void onScaleStart(ScaleStartDetails details) {
     final box = context.findRenderObject() as RenderBox;
-    final offset = box.globalToLocal(details.globalPosition);
+    final offset = box.globalToLocal(details.focalPoint);
     final point = Point(offset.dx, offset.dy);
     final points = [point];
     line = Stroke(points);
     currentLineStreamController.add(line!);
   }
 
-  void onPanUpdate(DragUpdateDetails details) {
+  void onScaleUpdate(ScaleUpdateDetails details) {
     final box = context.findRenderObject() as RenderBox;
-    final offset = box.globalToLocal(details.globalPosition);
+    final offset = box.globalToLocal(details.focalPoint);
     final point = Point(offset.dx, offset.dy);
     final points = [...line!.points, point];
     line = Stroke(points);
     currentLineStreamController.add(line!);
   }
 
-  void onPanEnd(DragEndDetails details) {
+  void onScaleEnd(ScaleEndDetails details) {
     lines = List.from(lines)..add(line!);
     linesStreamController.add(lines);
   }
 
   Widget buildCurrentPath(BuildContext context) {
-    final settingsProvider = Provider.of<StrokeOptions>(context);
-
     return GestureDetector(
-      onPanStart: onPanStart,
-      onPanUpdate: onPanUpdate,
-      onPanEnd: onPanEnd,
+      onScaleStart: onScaleStart,
+      onScaleUpdate: onScaleUpdate,
+      onScaleEnd: onScaleEnd,
       child: RepaintBoundary(
         child: SizedBox(
             width: MediaQuery.of(context).size.width,
@@ -68,7 +66,7 @@ class _DrawingPageState extends State<DrawingPage> {
                   return CustomPaint(
                     painter: Sketcher(
                       lines: line == null ? [] : [line!],
-                      options: settingsProvider,
+                      options: Provider.of<StrokeOptions>(context),
                     ),
                   );
                 })),
@@ -77,8 +75,6 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   Widget buildAllPaths(BuildContext context) {
-    final settingsProvider = Provider.of<StrokeOptions>(context);
-
     return RepaintBoundary(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -89,7 +85,7 @@ class _DrawingPageState extends State<DrawingPage> {
             return CustomPaint(
               painter: Sketcher(
                 lines: lines,
-                options: settingsProvider,
+                options: Provider.of<StrokeOptions>(context),
               ),
             );
           },

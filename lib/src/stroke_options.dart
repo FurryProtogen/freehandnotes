@@ -24,11 +24,9 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
       radius: const Radius.circular(30),
       child: ListView(
         children: [
-          Text(
-            widget.stringSize ?? 'size',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          _MenuSettingText(
+            title: widget.stringSize ?? 'size',
+            value: settingsProvider.size.round().toString(),
           ),
           Slider(
               value: settingsProvider.size,
@@ -41,11 +39,9 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
                   settingsProvider.size = value;
                 })
               }),
-          Text(
-            widget.stringThinning ?? 'thinning',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          _MenuSettingText(
+            title: widget.stringThinning ?? 'thinning',
+            value: settingsProvider.thinning.round().toString(),
           ),
           Slider(
               value: settingsProvider.thinning,
@@ -58,95 +54,71 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
                   settingsProvider.thinning = value;
                 })
               }),
-          Text(
-            widget.stringStreamline ?? 'streamline',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          _MenuSettingText(
+            title: widget.stringStreamline ?? 'streamline',
+            value: settingsProvider.streamline.round().toString(),
           ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              return Slider(
-                  value: settingsProvider.streamline,
-                  min: 0,
-                  max: 1,
-                  divisions: 100,
-                  label: settingsProvider.streamline.toStringAsFixed(2),
-                  onChanged: (double value) => {
-                    setState(() {
-                      settingsProvider.streamline = value;
-                    })
-                  });
-            },
+          Slider(
+              value: settingsProvider.streamline,
+              min: 0,
+              max: 1,
+              divisions: 100,
+              label: settingsProvider.streamline.toStringAsFixed(2),
+              onChanged: (double value) => {
+                setState(() {
+                  settingsProvider.streamline = value;
+                })
+              }),
+          _MenuSettingText(
+            title: widget.stringSmoothing ?? 'smoothing',
+            value: settingsProvider.smoothing.round().toString(),
           ),
-          Text(
-            widget.stringSmoothing ?? 'smoothing',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          Slider(
+              value: settingsProvider.smoothing,
+              min: 0,
+              max: 1,
+              divisions: 100,
+              label: settingsProvider.smoothing.toStringAsFixed(2),
+              onChanged: (double value) => {
+                setState(() {
+                  settingsProvider.smoothing = value;
+                })
+              }),
+          _MenuSettingText(
+            title: widget.stringTaperStart ?? 'taper start',
+            value: settingsProvider.taperStart.round().toString(),
           ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              return Slider(
-                  value: settingsProvider.smoothing,
-                  min: 0,
-                  max: 1,
-                  divisions: 100,
-                  label: settingsProvider.smoothing.toStringAsFixed(2),
-                  onChanged: (double value) => {
-                    setState(() {
-                      settingsProvider.smoothing = value;
-                    })
-                  });
-            },
+          Slider(
+              value: settingsProvider.taperStart,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: settingsProvider.taperStart.toStringAsFixed(2),
+              onChanged: (double value) => {
+                setState(() {
+                  settingsProvider.taperStart = value;
+                })
+              }),
+          _MenuSettingText(
+            title: widget.stringTaperEnd ?? 'taper end',
+            value: settingsProvider.taperEnd.round().toString(),
           ),
-          Text(
-            widget.stringTaperStart ?? 'taper start',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              return Slider(
-                  value: settingsProvider.taperStart,
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: settingsProvider.taperStart.toStringAsFixed(2),
-                  onChanged: (double value) => {
-                    setState(() {
-                      settingsProvider.taperStart = value;
-                    })
-                  });
-            },
-          ),
-          Text(
-            widget.stringTaperEnd ?? 'taper end',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-          StatefulBuilder(
-            builder: (context, setState) {
-              return Slider(
-                  value: settingsProvider.taperEnd,
-                  min: 0,
-                  max: 100,
-                  divisions: 100,
-                  label: settingsProvider.taperEnd.toStringAsFixed(2),
-                  onChanged: (double value) => {
-                    setState(() {
-                      settingsProvider.taperEnd = value;
-                    })
-                  });
-            },
-          ),
+          Slider(
+              value: settingsProvider.taperEnd,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: settingsProvider.taperEnd.toStringAsFixed(2),
+              onChanged: (double value) => {
+                setState(() {
+                  settingsProvider.taperEnd = value;
+                })
+              }),
          /* const Text(
             'Clear',
             textAlign: TextAlign.start,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           GestureDetector(
             // onTap: clear,
@@ -166,97 +138,76 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
   }
 }
 
+class _MenuSettingText extends StatelessWidget {
+  final String title;
+  final String value;
+  const _MenuSettingText({Key? key, required this.title, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: title,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
+        children: <TextSpan> [
+          TextSpan(
+            text: ' - $value',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class StrokeOptions extends ChangeNotifier {
   /// The base size (diameter) of the stroke.
-  double _size = 10;
   double get size => _size;
+  double _size = 10;
+  set size(double value) {_size = value; notifyListeners();}
 
   /// The effect of pressure on the stroke's size.
-  double _thinning = 0.10;
   double get thinning => _thinning;
+  double _thinning = 0.60;
+  set thinning(double value) {_thinning = value; notifyListeners();}
 
   /// Controls the density of points along the stroke's edges.
-  double _smoothing = 1.0;
   double get smoothing => _smoothing;
+  double _smoothing = 1.0;
+  set smoothing(double value) {_smoothing = value; notifyListeners();}
 
   /// Controls the level of variation allowed in the input points.
-  double _streamline = 0.85;
   double get streamline => _streamline;
+  double _streamline = 0.85;
+  set streamline(double value) {_streamline = value; notifyListeners();}
 
-  // Whether to simulate pressure or use the point's provided pressures.
-  bool _simulatePressure = true;
+  /// Whether to simulate pressure or use the point's provided pressures.
   bool get simulatePressure => _simulatePressure;
+  bool _simulatePressure = true;
+  set simulatePressure(bool value) {_simulatePressure = value; notifyListeners();}
 
-  // The distance to taper the front of the stroke.
-  double _taperStart = 0.0;
+  /// The distance to taper the front of the stroke.
   double get taperStart => _taperStart;
+  double _taperStart = 0.0;
+  set taperStart(double value) {_taperStart = value; notifyListeners();}
 
-  // The distance to taper the end of the stroke.
-  double _taperEnd = 0.0;
+  /// The distance to taper the end of the stroke.
   double get taperEnd => _taperEnd;
+  double _taperEnd = 0.0;
+  set taperEnd(double value) {_taperEnd = value; notifyListeners();}
 
-  // Whether to add a cap to the start of the stroke.
-  bool _capStart = true;
+  /// Whether to add a cap to the start of the stroke.
   bool get capStart => _capStart;
+  bool _capStart = true;
+  set capStart(bool value) {_capStart = value; notifyListeners();}
 
-  // Whether to add a cap to the end of the stroke.
-  bool _capEnd = true;
+  /// Whether to add a cap to the end of the stroke.
   bool get capEnd => _capEnd;
+  bool _capEnd = true;
+  set capEnd(bool value) {_capEnd = value; notifyListeners();}
 
-  // Whether the line is complete.
-  bool _isComplete = false;
+  /// Whether the line is complete.
   bool get isComplete => _isComplete;
-
-
-
-  set size(double value) {
-    _size = value;
-    notifyListeners();
-  }
-
-  set thinning(double value) {
-    _thinning = value;
-    notifyListeners();
-  }
-
-  set smoothing(double value) {
-    _smoothing = value;
-    notifyListeners();
-  }
-
-  set streamline(double value) {
-    _streamline = value;
-    notifyListeners();
-  }
-
-  set simulatePressure(bool value) {
-    _simulatePressure = value;
-    notifyListeners();
-  }
-
-  set taperStart(double value) {
-    _taperStart = value;
-    notifyListeners();
-  }
-
-  set taperEnd(double value) {
-    _taperEnd = value;
-    notifyListeners();
-  }
-
-  set capStart(bool value) {
-    _capStart = value;
-    notifyListeners();
-  }
-
-
-  set capEnd(bool value) {
-    _capEnd = value;
-    notifyListeners();
-  }
-
-  set isComplete(bool value) {
-    _isComplete = value;
-    notifyListeners();
-  }
+  bool _isComplete = false;
+  set isComplete(bool value) {_isComplete = value; notifyListeners();}
 }
