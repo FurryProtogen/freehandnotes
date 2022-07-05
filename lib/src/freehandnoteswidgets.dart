@@ -79,8 +79,16 @@ class _BottomSheetState extends State<_BottomSheet> {
   bool isFullScreen = false;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: isFullScreen ? MediaQuery.of(context).size.height-40 : MediaQuery.of(context).size.height*.7,
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: isFullScreen ? MediaQuery.of(context).size.height*.7 : 0, end: isFullScreen ? MediaQuery.of(context).size.height-40 : MediaQuery.of(context).size.height*.7),
+      curve: Curves.easeInOut,
+      duration: Duration(milliseconds: isFullScreen ? 85 : 85),
+      builder: (context, double i, child) {
+        return SizedBox(
+          height: i,
+          child: child,
+        );
+      },
       child: Column(
         children: [
           Padding(

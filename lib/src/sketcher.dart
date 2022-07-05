@@ -11,7 +11,7 @@ class Sketcher extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Colors.black;
+    Paint paint = Paint()..color = options.color;
 
     for (int i = 0; i < lines.length; ++i) {
       final outlinePoints = getStroke(

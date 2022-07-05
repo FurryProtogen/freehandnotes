@@ -24,6 +24,16 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
       radius: const Radius.circular(30),
       child: ListView(
         children: [
+          SizedBox(
+            height: (55 / (MediaQuery.of(context).size.width/55 < colorCards.length ? MediaQuery.of(context).size.width/55 : colorCards.length.toDouble()) / colorCards.length).round()*70,
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: (MediaQuery.of(context).size.width/55 < colorCards.length ? MediaQuery.of(context).size.width/55 : colorCards.length).round(),
+              physics: const NeverScrollableScrollPhysics(),
+              children: colorCards,
+            ),
+          ),
+          const Divider(),
           _MenuSettingText(
             title: widget.stringSize ?? 'size',
             value: settingsProvider.size.round().toString(),
@@ -136,6 +146,30 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
       ),
     );
   }
+
+  List<_CardColorPicker> colorCards = const <_CardColorPicker> [
+    _CardColorPicker(
+      color: Colors.black,
+    ),
+    _CardColorPicker(
+      color: Colors.red,
+    ),
+    _CardColorPicker(
+      color: Colors.orange,
+    ),
+    _CardColorPicker(
+      color: Colors.yellow,
+    ),
+    _CardColorPicker(
+      color: Colors.green,
+    ),
+    _CardColorPicker(
+      color: Colors.blue,
+    ),
+    _CardColorPicker(
+      color: Colors.purple,
+    ),
+  ];
 }
 
 class _MenuSettingText extends StatelessWidget {
@@ -160,7 +194,32 @@ class _MenuSettingText extends StatelessWidget {
   }
 }
 
+class _CardColorPicker extends StatelessWidget {
+  final Color color;
+  const _CardColorPicker({Key? key, required this.color}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 55,
+      height: 55,
+      child: Card(
+        color: color,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: (){Provider.of<StrokeOptions>(context, listen: false).color = color;},
+        ),
+      ),
+    );
+  }
+}
+
 class StrokeOptions extends ChangeNotifier {
+  /// The color of the stroke.
+  Color get color => _color;
+  Color _color = Colors.black;
+  set color(Color value) {_color = value; notifyListeners();}
+
   /// The base size (diameter) of the stroke.
   double get size => _size;
   double _size = 10;
