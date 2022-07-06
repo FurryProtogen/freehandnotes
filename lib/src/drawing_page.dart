@@ -16,57 +16,50 @@ class DrawingPage extends StatefulWidget {
 }
 
 class _DrawingPageState extends State<DrawingPage> {
-  List<Stroke> lines = <Stroke>[];
-  Stroke? line;
   StreamController<Stroke> currentLineStreamController = StreamController<Stroke>.broadcast();
   StreamController<List<Stroke>> linesStreamController = StreamController<List<Stroke>>.broadcast();
 
-
-  /*Future<void> updateSizeOption(double size) async {
-    setState(() {
-      widget.options.value.size = size;
-    });
-  }*/
-
   void onScaleStart(ScaleStartDetails details) {
+    final StrokeOptions provider = Provider.of<StrokeOptions>(context, listen: false);
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.focalPoint);
     final point = Point(offset.dx, offset.dy);
     final points = [point];
-    line = Stroke(points);
-    currentLineStreamController.add(line!);
+    provider.line = Stroke(points);
+    currentLineStreamController.add(provider.line!);
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
+    final StrokeOptions provider = Provider.of<StrokeOptions>(context, listen: false);
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.focalPoint);
     final point = Point(offset.dx, offset.dy);
-    final points = [...line!.points, point];
-    line = Stroke(points);
-    currentLineStreamController.add(line!);
+    final points = [...provider.line!.points, point];
+    provider.line = Stroke(points);
+    currentLineStreamController.add(provider.line!);
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    lines = List.from(lines)..add(line!);
-    linesStreamController.add(lines);
+    final StrokeOptions provider = Provider.of<StrokeOptions>(context, listen: false);
+    provider.lines = List.from(provider.lines)..add(provider.line!);
+    linesStreamController.add(provider.lines);
   }
 
   Widget buildCurrentPath(BuildContext context) {
+    final StrokeOptions provider = Provider.of<StrokeOptions>(context);
     return GestureDetector(
       onScaleStart: onScaleStart,
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,
       child: RepaintBoundary(
-        child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
+        child: SizedBox.expand(
             child: StreamBuilder<Stroke>(
                 stream: currentLineStreamController.stream,
                 builder: (context, snapshot) {
                   return CustomPaint(
                     painter: Sketcher(
-                      lines: line == null ? [] : [line!],
-                      options: Provider.of<StrokeOptions>(context),
+                      lines: provider.line == null ? [] : [provider.line!],
+                      options: provider,
                     ),
                   );
                 })),
@@ -76,15 +69,12 @@ class _DrawingPageState extends State<DrawingPage> {
 
   Widget buildAllPaths(BuildContext context) {
     return RepaintBoundary(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+      child: SizedBox.expand(
         child: StreamBuilder<List<Stroke>>(
           stream: linesStreamController.stream,
           builder: (context, snapshot) {
             return CustomPaint(
               painter: Sketcher(
-                lines: lines,
                 options: Provider.of<StrokeOptions>(context),
               ),
             );
@@ -96,7 +86,6 @@ class _DrawingPageState extends State<DrawingPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(

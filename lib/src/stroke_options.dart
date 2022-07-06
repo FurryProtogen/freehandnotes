@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freehandnotes/src/stroke.dart';
 import 'package:provider/provider.dart';
 
 class StrokeOptionsSliders extends StatefulWidget {
@@ -8,8 +9,9 @@ class StrokeOptionsSliders extends StatefulWidget {
   final String? stringSmoothing;
   final String? stringTaperStart;
   final String? stringTaperEnd;
+  final String? stringClear;
 
-  const StrokeOptionsSliders({Key? key, this.stringSize, this.stringThinning, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd}) : super(key: key);
+  const StrokeOptionsSliders({Key? key, this.stringSize, this.stringThinning, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd, this.stringClear}) : super(key: key);
 
   @override
   State<StrokeOptionsSliders> createState() => _StrokeOptionsSlidersState();
@@ -51,7 +53,7 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
               }),
           _MenuSettingText(
             title: widget.stringThinning ?? 'thinning',
-            value: settingsProvider.thinning.round().toString(),
+            value: settingsProvider.thinning.toStringAsFixed(2).toString(),
           ),
           Slider(
               value: settingsProvider.thinning,
@@ -66,7 +68,7 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
               }),
           _MenuSettingText(
             title: widget.stringStreamline ?? 'streamline',
-            value: settingsProvider.streamline.round().toString(),
+            value: settingsProvider.streamline.toStringAsFixed(2).toString(),
           ),
           Slider(
               value: settingsProvider.streamline,
@@ -81,7 +83,7 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
               }),
           _MenuSettingText(
             title: widget.stringSmoothing ?? 'smoothing',
-            value: settingsProvider.smoothing.round().toString(),
+            value: settingsProvider.smoothing.toStringAsFixed(2),
           ),
           Slider(
               value: settingsProvider.smoothing,
@@ -103,7 +105,7 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
               min: 0,
               max: 100,
               divisions: 100,
-              label: settingsProvider.taperStart.toStringAsFixed(2),
+              label: settingsProvider.taperStart.round().toString(),
               onChanged: (double value) => {
                 setState(() {
                   settingsProvider.taperStart = value;
@@ -118,20 +120,20 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
               min: 0,
               max: 100,
               divisions: 100,
-              label: settingsProvider.taperEnd.toStringAsFixed(2),
+              label: settingsProvider.taperEnd.round().toString(),
               onChanged: (double value) => {
                 setState(() {
                   settingsProvider.taperEnd = value;
                 })
               }),
-         /* const Text(
-            'Clear',
+          Text(
+            widget.stringClear ?? 'Clear',
             textAlign: TextAlign.start,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
           ),
           GestureDetector(
-            // onTap: clear,
+            onTap: settingsProvider.clearAll,
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
               child: CircleAvatar(
@@ -141,7 +143,7 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
                     color: Colors.white,
                   )),
             ),
-          ),*/
+          ),
         ],
       ),
     );
@@ -215,6 +217,23 @@ class _CardColorPicker extends StatelessWidget {
 }
 
 class StrokeOptions extends ChangeNotifier {
+  ///The list containting all lines.
+  List<Stroke> get lines => _lines;
+  List<Stroke> _lines = <Stroke>[];
+  set lines(List<Stroke> value) {_lines = value; notifyListeners();}
+
+  ///Line variable
+  Stroke? get line => _line;
+  Stroke? _line;
+  set line(Stroke? value) {_line = value; notifyListeners();}
+
+  ///Remove all lines.
+  void clearAll() {
+    lines = [];
+    line = null;
+    notifyListeners();
+  }
+
   /// The color of the stroke.
   Color get color => _color;
   Color _color = Colors.black;

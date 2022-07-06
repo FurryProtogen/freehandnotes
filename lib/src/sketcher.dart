@@ -4,18 +4,17 @@ import 'stroke.dart';
 import 'stroke_options.dart';
 
 class Sketcher extends CustomPainter {
-  final List<Stroke> lines;
+  final List<Stroke>? lines;
   final StrokeOptions options;
-
-  Sketcher({required this.lines, required this.options});
+  Sketcher({this.lines, required this.options});
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()..color = options.color;
 
-    for (int i = 0; i < lines.length; ++i) {
+    for (int i = 0; i < (lines?.length ?? options.lines.length); ++i) {
       final outlinePoints = getStroke(
-        lines[i].points,
+        (lines ?? options.lines)[i].points,
         size: options.size,
         thinning: options.thinning,
         smoothing: options.smoothing,
@@ -47,10 +46,8 @@ class Sketcher extends CustomPainter {
               p0.x, p0.y, (p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
         }
       }
-
       canvas.drawPath(path, paint);
     }
-    
   }
 
   @override
