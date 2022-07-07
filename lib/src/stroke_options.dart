@@ -3,15 +3,18 @@ import 'package:freehandnotes/src/stroke.dart';
 import 'package:provider/provider.dart';
 
 class StrokeOptionsSliders extends StatefulWidget {
+  final String? stringColor;
   final String? stringSize;
   final String? stringThinning;
+  final String? stringAdvancedSettings;
   final String? stringStreamline;
   final String? stringSmoothing;
   final String? stringTaperStart;
   final String? stringTaperEnd;
   final String? stringClear;
+  final String? stringResetSettings;
 
-  const StrokeOptionsSliders({Key? key, this.stringSize, this.stringThinning, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd, this.stringClear}) : super(key: key);
+  const StrokeOptionsSliders({Key? key, this.stringColor, this.stringSize, this.stringThinning, this.stringAdvancedSettings, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd, this.stringClear, this.stringResetSettings}) : super(key: key);
 
   @override
   State<StrokeOptionsSliders> createState() => _StrokeOptionsSlidersState();
@@ -26,6 +29,33 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
       radius: const Radius.circular(30),
       child: ListView(
         children: [
+          _MenuSettingText(
+            title: widget.stringClear ?? 'clear',
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: settingsProvider.undo,
+                child: const Icon(
+                  Icons.undo,
+                  size: 20.0,
+                ),
+              ),
+              const SizedBox(width: 10,),
+              ElevatedButton(
+                onPressed: settingsProvider.clearAll,
+                child: const Icon(
+                  Icons.delete,
+                  size: 20.0,
+                ),
+              ),
+            ],
+          ),
+          const Divider(),
+          _MenuSettingText(
+            title: widget.stringColor ?? 'color',
+          ),
           SizedBox(
             height: (55 / (MediaQuery.of(context).size.width/55 < colorCards.length ? MediaQuery.of(context).size.width/55 : colorCards.length.toDouble()) / colorCards.length).round()*70,
             child: GridView.count(
@@ -66,84 +96,86 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
                   settingsProvider.thinning = value;
                 })
               }),
+          ExpansionTile(
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            title: _MenuSettingText(
+              title: widget.stringAdvancedSettings ?? 'advanced settings',
+            ),
+            children: [
+              _MenuSettingText(
+                title: widget.stringStreamline ?? 'streamline',
+                value: settingsProvider.streamline.toStringAsFixed(2).toString(),
+              ),
+              Slider(
+                  value: settingsProvider.streamline,
+                  min: 0,
+                  max: 1,
+                  divisions: 100,
+                  label: settingsProvider.streamline.toStringAsFixed(2),
+                  onChanged: (double value) => {
+                    setState(() {
+                      settingsProvider.streamline = value;
+                    })
+                  }),
+              _MenuSettingText(
+                title: widget.stringSmoothing ?? 'smoothing',
+                value: settingsProvider.smoothing.toStringAsFixed(2),
+              ),
+              Slider(
+                  value: settingsProvider.smoothing,
+                  min: 0,
+                  max: 1,
+                  divisions: 100,
+                  label: settingsProvider.smoothing.toStringAsFixed(2),
+                  onChanged: (double value) => {
+                    setState(() {
+                      settingsProvider.smoothing = value;
+                    })
+                  }),
+              _MenuSettingText(
+                title: widget.stringTaperStart ?? 'taper start',
+                value: settingsProvider.taperStart.round().toString(),
+              ),
+              Slider(
+                  value: settingsProvider.taperStart,
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
+                  label: settingsProvider.taperStart.round().toString(),
+                  onChanged: (double value) => {
+                    setState(() {
+                      settingsProvider.taperStart = value;
+                    })
+                  }),
+              _MenuSettingText(
+                title: widget.stringTaperEnd ?? 'taper end',
+                value: settingsProvider.taperEnd.round().toString(),
+              ),
+              Slider(
+                  value: settingsProvider.taperEnd,
+                  min: 0,
+                  max: 100,
+                  divisions: 100,
+                  label: settingsProvider.taperEnd.round().toString(),
+                  onChanged: (double value) => {
+                    setState(() {
+                      settingsProvider.taperEnd = value;
+                    })
+                  }),
+            ],
+          ),
+          const Divider(),
           _MenuSettingText(
-            title: widget.stringStreamline ?? 'streamline',
-            value: settingsProvider.streamline.toStringAsFixed(2).toString(),
+            title: widget.stringResetSettings ?? 'reset settings',
           ),
-          Slider(
-              value: settingsProvider.streamline,
-              min: 0,
-              max: 1,
-              divisions: 100,
-              label: settingsProvider.streamline.toStringAsFixed(2),
-              onChanged: (double value) => {
-                setState(() {
-                  settingsProvider.streamline = value;
-                })
-              }),
-          _MenuSettingText(
-            title: widget.stringSmoothing ?? 'smoothing',
-            value: settingsProvider.smoothing.toStringAsFixed(2),
-          ),
-          Slider(
-              value: settingsProvider.smoothing,
-              min: 0,
-              max: 1,
-              divisions: 100,
-              label: settingsProvider.smoothing.toStringAsFixed(2),
-              onChanged: (double value) => {
-                setState(() {
-                  settingsProvider.smoothing = value;
-                })
-              }),
-          _MenuSettingText(
-            title: widget.stringTaperStart ?? 'taper start',
-            value: settingsProvider.taperStart.round().toString(),
-          ),
-          Slider(
-              value: settingsProvider.taperStart,
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: settingsProvider.taperStart.round().toString(),
-              onChanged: (double value) => {
-                setState(() {
-                  settingsProvider.taperStart = value;
-                })
-              }),
-          _MenuSettingText(
-            title: widget.stringTaperEnd ?? 'taper end',
-            value: settingsProvider.taperEnd.round().toString(),
-          ),
-          Slider(
-              value: settingsProvider.taperEnd,
-              min: 0,
-              max: 100,
-              divisions: 100,
-              label: settingsProvider.taperEnd.round().toString(),
-              onChanged: (double value) => {
-                setState(() {
-                  settingsProvider.taperEnd = value;
-                })
-              }),
-          Text(
-            widget.stringClear ?? 'Clear',
-            textAlign: TextAlign.start,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-          ),
-          GestureDetector(
-            onTap: settingsProvider.clearAll,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: CircleAvatar(
-                  child: Icon(
-                    Icons.delete,
-                    size: 20.0,
-                    color: Colors.white,
-                  )),
+          ElevatedButton(
+            onPressed: settingsProvider.resetSettings,
+            child: const Icon(
+              Icons.settings_backup_restore,
+              size: 20.0,
             ),
           ),
+          const SizedBox(height: 10,),
         ],
       ),
     );
@@ -176,8 +208,8 @@ class _StrokeOptionsSlidersState extends State<StrokeOptionsSliders> {
 
 class _MenuSettingText extends StatelessWidget {
   final String title;
-  final String value;
-  const _MenuSettingText({Key? key, required this.title, required this.value}) : super(key: key);
+  final String? value;
+  const _MenuSettingText({Key? key, required this.title, this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +219,7 @@ class _MenuSettingText extends StatelessWidget {
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
         children: <TextSpan> [
           TextSpan(
-            text: ' - $value',
+            text: value!=null ? ' - $value': '',
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
           ),
         ],
@@ -231,6 +263,30 @@ class StrokeOptions extends ChangeNotifier {
   void clearAll() {
     lines = [];
     line = null;
+    notifyListeners();
+  }
+
+  ///Removes last line.
+  void undo() {
+    lines.removeLast();
+    line = null;
+    notifyListeners();
+  }
+
+  ///Reset all settings;
+  void resetSettings() {
+    color = Colors.black;
+    size = 10;
+    thinning = 0.60;
+    smoothing = 1.0;
+    streamline = 0.85;
+    simulatePressure = true;
+    taperStart = 0.0;
+    taperEnd = 0.0;
+    capStart = true;
+    capEnd = true;
+    isComplete = false;
+
     notifyListeners();
   }
 

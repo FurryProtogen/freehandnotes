@@ -19,13 +19,15 @@ class FreehandNotesOptionsFAB extends StatefulWidget {
   final String? stringSettings;
   final String? stringSize;
   final String? stringThinning;
+  final String? stringAdvancedSettings;
   final String? stringStreamline;
   final String? stringSmoothing;
   final String? stringTaperStart;
   final String? stringTaperEnd;
   final String? stringClear;
+  final String? stringResetSettings;
 
-  const FreehandNotesOptionsFAB({Key? key, this.buttonColor, this.iconColor, this.stringSettings, this.stringSize, this.stringThinning, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd, this.stringClear}) : super(key: key);
+  const FreehandNotesOptionsFAB({Key? key, this.buttonColor, this.iconColor, this.stringSettings, this.stringSize, this.stringThinning, this.stringAdvancedSettings, this.stringStreamline, this.stringSmoothing, this.stringTaperStart, this.stringTaperEnd, this.stringClear, this.stringResetSettings}) : super(key: key);
 
   @override
   State<FreehandNotesOptionsFAB> createState() => _FreehandNotesOptionsFABState();
@@ -52,11 +54,13 @@ class _FreehandNotesOptionsFABState extends State<FreehandNotesOptionsFAB> {
               strokeOptionsSliders: StrokeOptionsSliders(
                 stringSize: widget.stringSize,
                 stringThinning: widget.stringThinning,
+                stringAdvancedSettings: widget.stringAdvancedSettings,
                 stringStreamline: widget.stringStreamline,
                 stringSmoothing: widget.stringSmoothing,
                 stringTaperStart: widget.stringTaperStart,
                 stringTaperEnd: widget.stringTaperEnd,
                 stringClear: widget.stringClear,
+                stringResetSettings: widget.stringResetSettings,
               ),
               stringSettings: widget.stringSettings,
             );
